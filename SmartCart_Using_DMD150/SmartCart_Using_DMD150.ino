@@ -3,7 +3,7 @@
 //=======================================
 //Ultrasounds Sensor
 const int echoPIN = 8;         //define Ultsenser echo
-const int trigPIN = 8;         //define Ultsenser triger 
+const int trigPIN = 10;         //define Ultsenser triger
 const double Ultsenser_perCenter = 2941.17647;  //100000/340 [cm/us]
 
 //=======================================
@@ -38,9 +38,9 @@ const int Break = 5;
 // Define Motor Speed (PWM is Analog signal 0~255)
 unsigned int PWM = 255;
 const int TIme = 10;
-
-double measureDistance()
-{
+/*
+  double measureDistance()
+  {
   double distance = 0;
   double cycletime = 0;
 
@@ -56,87 +56,90 @@ double measureDistance()
   Serial.print(distance);
   Serial.println("m");
   return distance
-}
-
+  }
+*/
 
 void forward()
 {
-  digitalWrite(motor1IN1,HIGH);
-  digitalWrite(motor1IN2,LOW);
+  digitalWrite(motor1IN1, HIGH);
+  digitalWrite(motor1IN2, LOW);
+  digitalWrite(motor2IN1, HIGH);
+  digitalWrite(motor2IN2, LOW);
   
-  digitalWrite(motor2IN1,HIGH);
-  digitalWrite(motor2IN2,LOW);
+
+
+
 }
 
 void backward()
 {
-  digitalWrite(motor1IN1,LOW);
-  digitalWrite(motor1IN2,HIGH);
-  
-  digitalWrite(motor2IN1,LOW);
-  digitalWrite(motor2IN2,HIGH);
+  digitalWrite(motor1IN1, LOW);
+  digitalWrite(motor1IN2, HIGH);
+
+  digitalWrite(motor2IN1, LOW);
+  digitalWrite(motor2IN2, HIGH);
 }
 
 void turnRight()
 {
-  digitalWrite(motor1IN1,HIGH);
-  digitalWrite(motor1IN2,LOW);
-  
-  digitalWrite(motor2IN1,LOW);
-  digitalWrite(motor2IN2,HIGH);
+  digitalWrite(motor1IN1, HIGH);
+  digitalWrite(motor1IN2, LOW);
+
+  digitalWrite(motor2IN1, LOW);
+  digitalWrite(motor2IN2, HIGH);
 }
 
 void turnLeft()
 {
-  digitalWrite(motor1IN1,HIGH);
-  digitalWrite(motor1IN2,LOW);
-  
-  digitalWrite(motor2IN1,LOW);
-  digitalWrite(motor2IN2,HIGH);
+  digitalWrite(motor1IN1, HIGH);
+  digitalWrite(motor1IN2, LOW);
+
+  digitalWrite(motor2IN1, LOW);
+  digitalWrite(motor2IN2, HIGH);
 }
 
 void stop_()
 {
-  digitalWrite(motor1IN1,LOW);
-  digitalWrite(motor1IN2,LOW);
-  
-  digitalWrite(motor2IN1,LOW);
-  digitalWrite(motor2IN2,LOW);
+  digitalWrite(motor1IN1, LOW);
+  digitalWrite(motor1IN2, LOW);
+
+  digitalWrite(motor2IN1, LOW);
+  digitalWrite(motor2IN2, LOW);
 }
 
 void break_()
 {
-  digitalWrite(motor1IN1,HIGH);
-  digitalWrite(motor1IN2,HIGH);
-  
-  digitalWrite(motor2IN1,HIGH);
-  digitalWrite(motor2IN2,HIGH);
+  digitalWrite(motor1IN1, HIGH);
+  digitalWrite(motor1IN2, HIGH);
+
+  digitalWrite(motor2IN1, HIGH);
+  digitalWrite(motor2IN2, HIGH);
 }
 
-void setMotorControl(unsigned int situation, unsigned int PWM_Value)
+void setMotorControl(unsigned int situation, unsigned int PWM_Value1,unsigned int PWM_Value2)
 {
   //Motor Speed control = PWM
-  analogWrite(PWM_ENA,PWM_Value);
-  analogWrite(PWM_ENB,PWM_Value);
-  
-  if (situation == Forward){
+  analogWrite(PWM_ENA, PWM_Value1);
+  analogWrite(PWM_ENB, PWM_Value2);
+
+  if (situation == Forward) {
     forward();
   }
-  else if (situation == Backward){
+  else if (situation == Backward) {
     backward();
   }
-  else if (situation == TurnRight){
+  else if (situation == TurnRight) {
     turnRight();
   }
-  else if (situation == TurnLeft){
+  else if (situation == TurnLeft) {
     turnLeft();
   }
-  else if (situation == Stop){
+  else if (situation == Stop) {
     stop_();
   }
-  else if (situation == Break){
+  else if (situation == Break) {
     break_();
-  }      
+  }
 }
 
 void setup() {
@@ -144,11 +147,11 @@ void setup() {
   Serial.begin(9600);
 
   //set Ultrasounds SensorConfig
-  pinMode(trigPIN , OUTPUT);    
-  pinMode(echoPIN , INPUT);    
-  
+  pinMode(trigPIN , OUTPUT);
+  pinMode(echoPIN , INPUT);
+
   // set MotorConifg
-  pinMode(motor1IN1 , OUTPUT);      
+  pinMode(motor1IN1 , OUTPUT);
   pinMode(motor1IN2 , OUTPUT);
   pinMode(motor2IN1 , OUTPUT);
   pinMode(motor2IN2 , OUTPUT);
@@ -158,36 +161,29 @@ void setup() {
   unsigned int currentPWM = 0;
 
   //setting PWM init
-  analogWrite(PWM_ENA,currentPWM);
-  analogWrite(PWM_ENB,currentPWM);
+  analogWrite(PWM_ENA, currentPWM);
+  analogWrite(PWM_ENB, currentPWM);
 }
 
 void loop() {
   //SmartCart Forward function1
-  setMotorControl(Forward, 255);
+  //setMotorControl(break_, 255,255);
+  //delay(100);
+  
+  setMotorControl(Forward, 212  ,255);
   delay(300);                                    // SmartCart forward operation full Speed
-  //Motor 2 Forward
 
-  //SmartCart Forward function2
-  setMotorControl(Forward, 51);
-  delay(300);                                   //SmartCart forward operation 1/5 Speed
+  /*
+    //Motor1,2 stop
+    setMotorControl(Stop, 255);
+    delay(3000);
 
-                                  .
-  //SMart Cart TurnRight
-  setMotorControl(TurnRight, 255);
-  delay(300);                                   //SmartCart TurnRight operation 0.3s
-                                   
-  //SMart Cart TurnLeft
-  setMotorControl(TurnLeft, 255);
-  delay(300);                                    //SmartCart TrunLeft operation 0.3s
-    
-  //Motor 1,2 PWM control
-  for (int PWM_test = 100; PWM_test<255; PWM_test=PWM_test+50){
-    setMotorControl(Backward, PWM_test);
-    delay(300);                                  //Smart Backward operation with PWM added
-  }
+    //SmartCart Forward function2
+    setMotorControl(Forward, 200);
+    delay(300);                                   //SmartCart forward operation 1/5 Speed
 
-  //Motor1,2 stop
-  setMotorControl(Stop, 255);
-  delay(3000);
+     //SMart Cart TurnLeft
+    setMotorControl(TurnLeft, 255);
+    delay(300);
+  */
 }
